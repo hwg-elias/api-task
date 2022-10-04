@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { finished } from 'stream';
 import { PostgresDataSource } from '../data-source';
 import { Task } from '../entity/Task';
 const TaskRepository = PostgresDataSource.getRepository(Task);
@@ -53,10 +54,27 @@ export const updateTask = async (req: Request, res: Response) => {
 };
 
 export const updateFinished = async (req: Request, res: Response) => {
-  console.log(req.params);
   const { id } = req.params;
 
   const verifyTrueOrFalse = await TaskRepository.findOneBy({ id: +id });
 
-  return res.json(verifyTrueOrFalse);
+  if (verifyTrueOrFalse.finished === true) {
+    const taskUpdating = await TaskRepository.createQueryBuilder()
+      .update(Task)
+      .set({ finished: false })
+      .where('id = :id', { id })
+      .returning('*')
+      .execute();
+
+    return res.status(200).json(taskUpdating);
+  } else {
+    const taskUpdating = await TaskRepository.createQueryBuilder()
+      .update(Task)
+      .set({ finished: true })
+      .where('id = :id', { id })
+      .returning('*')
+      .execute();
+
+    return res.status(200).json(taskUpdating);
+  }
 };

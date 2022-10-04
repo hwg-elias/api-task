@@ -12,7 +12,7 @@ const routes = Router();
 routes.get('/tasks', getTasks);
 routes.get('/tasks/:id', getTask);
 routes.put('/task-update/:id', updateTask);
-routes.patch('/task-update/:id', updateFinished);
+routes.patch('/task-finished/:id', updateFinished);
 routes.post('/save-task', saveTask);
 
 export { routes };
