@@ -1,9 +1,10 @@
-import { Request, Response, ErrorRequestHandler } from 'express';
+import { Request, Response, ErrorRequestHandler, NextFunction } from 'express';
 
 export const errorHandler: ErrorRequestHandler = async (
   err: Error,
   req: Request,
   res: Response,
+  next: NextFunction,
 ) => {
   if (err instanceof Error) {
     return res.status(400).json({
